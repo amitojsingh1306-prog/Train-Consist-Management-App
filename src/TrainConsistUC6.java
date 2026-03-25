@@ -1,14 +1,6 @@
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * ============================================================
- * MAIN CLASS - TrainConsistUC6
- * ============================================================
- * Use Case 6: Map Bogie to Capacity using HashMap
- *
- * @version 6.0
- */
 
 public class TrainConsistUC6 {
 
