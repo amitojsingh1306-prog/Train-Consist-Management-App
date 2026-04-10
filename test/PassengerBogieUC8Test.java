@@ -1,40 +1,65 @@
-import java.util.*;
-import java.util.stream.Collectors;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-class DataUC8 {
-    String id;
-    String type;
-    int capacity;
+class TrainConsistManagementAppTest {
 
-    DataUC8(String id, String type, int capacity) {
-        this.id = id;
-        this.type = type;
-        this.capacity = capacity;
+    @Test
+    void testCargo_SafeAssignment() {
+        TrainConsistManagementApp.GoodsBogie bogie =
+                new TrainConsistManagementApp.GoodsBogie("Cylindrical");
+
+        bogie.assignCargo("Petroleum");
+
+        assertEquals("Petroleum", bogie.cargo);
     }
 
-    int getCapacity() {
-        return capacity;
+    @Test
+    void testCargo_UnsafeAssignmentHandled() {
+        TrainConsistManagementApp.GoodsBogie bogie =
+                new TrainConsistManagementApp.GoodsBogie("Rectangular");
+
+        bogie.assignCargo("Petroleum");
+
+        // Should NOT assign cargo
+        assertNull(bogie.cargo);
     }
 
-    void display() {
-        System.out.println(id + " " + type + " " + capacity);
+    @Test
+    void testCargo_CargoNotAssignedAfterFailure() {
+        TrainConsistManagementApp.GoodsBogie bogie =
+                new TrainConsistManagementApp.GoodsBogie("Rectangular");
+
+        bogie.assignCargo("Petroleum");
+
+        assertNull(bogie.cargo);
     }
-}
 
-public class PassengerBogieUC8Test {
-    public static void main(String[] args) {
+    @Test
+    void testCargo_ProgramContinuesAfterException() {
 
-        List<DataUC8> list = new ArrayList<>();
+        TrainConsistManagementApp.GoodsBogie b1 =
+                new TrainConsistManagementApp.GoodsBogie("Rectangular");
 
-        list.add(new DataUC8("B1","Sleeper",72));
-        list.add(new DataUC8("B2","AC",60));
-        list.add(new DataUC8("B3","First",40));
-        list.add(new DataUC8("B4","Sleeper",80));
+        TrainConsistManagementApp.GoodsBogie b2 =
+                new TrainConsistManagementApp.GoodsBogie("Cylindrical");
 
-        List<DataUC8> result = list.stream()
-                .filter(b -> b.getCapacity() > 60)
-                .collect(Collectors.toList());
+        // First fails
+        b1.assignCargo("Petroleum");
 
-        result.forEach(DataUC8::display);
+        // Second should still execute
+        b2.assignCargo("Petroleum");
+
+        assertEquals("Petroleum", b2.cargo);
+    }
+
+    @Test
+    void testCargo_FinallyBlockExecution() {
+
+        TrainConsistManagementApp.GoodsBogie bogie =
+                new TrainConsistManagementApp.GoodsBogie("Rectangular");
+
+        // We can't directly assert print statements,
+        // but we ensure method completes without crash
+        assertDoesNotThrow(() -> bogie.assignCargo("Petroleum"));
     }
 }
